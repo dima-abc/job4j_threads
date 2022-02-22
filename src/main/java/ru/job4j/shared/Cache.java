@@ -1,4 +1,4 @@
-package ru.job4j;
+package ru.job4j.shared;
 
 /**
  * 3.1.2. Общие ресурсы
