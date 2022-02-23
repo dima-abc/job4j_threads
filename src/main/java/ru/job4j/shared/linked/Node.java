@@ -7,11 +7,12 @@ package ru.job4j.shared.linked;
  * Правила создания Immutable объекта.
  * 1. Все поля отмечены final.
  * 2. Состояние объекта не изменяется после создания объекта.
+ * 3. Запрет на наследование, класс так же final.
  *
  * @author Dmitry Stepanov, user Dima_Nout
  * @since 22.02.2022
  */
-public class Node<T> {
+public final class Node<T> {
     private final Node<T> next;
     private final T value;
 
