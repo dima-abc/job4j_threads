@@ -6,7 +6,6 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -31,16 +30,16 @@ public class ParseFileTest {
             out.print(expected);
         }
         ParseFile parseFile = new ParseFile(source);
-        AtomicReference<String> result = new AtomicReference<>("");
+        StringBuffer result = new StringBuffer();
         Thread thread = new Thread(
-                () -> result.accumulateAndGet(parseFile.getContent(c -> true), (s1, s2) -> s1 + s2));
+                () -> result.append(parseFile.getContent(c -> true)));
         Thread thread1 = new Thread(
-                () -> result.accumulateAndGet(parseFile.getContent(c -> true), (s1, s2) -> s1 + s2));
+                () -> result.append(parseFile.getContent(c -> true)));
         thread1.start();
         thread.start();
         thread1.join();
         thread.join();
-        assertThat(expected + expected, is(result.get()));
+        assertThat(expected + expected, is(result.toString()));
     }
 
     @Test
@@ -51,17 +50,17 @@ public class ParseFileTest {
             out.print("123one1two2three3");
         }
         ParseFile parseFile = new ParseFile(source);
-        AtomicReference<String> result = new AtomicReference<>("");
+        StringBuffer result = new StringBuffer();
         Thread thread = new Thread(
                 () ->
-                    result.accumulateAndGet(parseFile.getContent(c -> c > 0x002F && c < 0x003A), (s1, s2) -> s1 + s2));
+                        result.append(parseFile.getContent(c -> c > 0x002F && c < 0x003A)));
         Thread thread1 = new Thread(
                 () ->
-                    result.accumulateAndGet(parseFile.getContent(c -> c > 0x002F && c < 0x003A), (s1, s2) -> s1 + s2));
+                        result.append(parseFile.getContent(c -> c > 0x002F && c < 0x003A)));
         thread1.start();
         thread.start();
         thread.join();
         thread1.join();
-        assertThat(expected + expected, is(result.get()));
+        assertThat(expected + expected, is(result.toString()));
     }
 }

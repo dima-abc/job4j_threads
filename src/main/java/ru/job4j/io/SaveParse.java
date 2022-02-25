@@ -30,7 +30,6 @@ public final class SaveParse {
             out.write(content.getBytes());
         } catch (IOException e) {
             LOG.error("Не удалось выполнить операцию", e.getCause());
-            throw new IllegalStateException();
         }
     }
 }

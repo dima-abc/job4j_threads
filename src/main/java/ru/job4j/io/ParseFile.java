@@ -34,18 +34,17 @@ public final class ParseFile {
 
     public synchronized String getContent(Predicate<Character> filter) {
         LOG.info("Чтение файла {}", file);
-        String output = "";
+        StringBuilder output = new StringBuilder();
         try (BufferedInputStream input = new BufferedInputStream(new FileInputStream(file))) {
             int data;
             while ((data = input.read()) != -1) {
                 if (filter.test((char) data)) {
-                    output += (char) data;
+                    output.append((char) data);
                 }
             }
         } catch (IOException e) {
             LOG.error("Не удалось выполнить операцию", e.getCause());
-            throw new IllegalStateException();
         }
-        return output;
+        return output.toString();
     }
 }
