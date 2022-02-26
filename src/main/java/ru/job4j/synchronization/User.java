@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * 3.1.3. Синхронизация ресурсов
  * 3. Класс хранилища пользователей UserStorage [#1104]
- * User модель данных.
+ * User модель данных. Immutable.
  *
  * @author Dmitry Stepanov, user Dima_Nout
  * @since 25.02.2022

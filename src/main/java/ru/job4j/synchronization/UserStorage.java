@@ -19,32 +19,30 @@ public class UserStorage {
     private final ConcurrentHashMap<Integer, User> users = new ConcurrentHashMap<>();
 
     public synchronized User findId(int id) {
-        User result = null;
-        if (users.get(id) != null) {
-            result = new User(id, users.get(id).getAmount());
-        }
-        return result;
+        return users.get(id);
     }
 
     public synchronized boolean add(User user) {
         return users.putIfAbsent(user.getId(),
-                new User(user.getId(), user.getAmount())) == null;
+                user) == null;
     }
 
     public synchronized boolean update(User user) {
         return users.replace(user.getId(),
-                new User(user.getId(), user.getAmount())) != null;
+                user) != null;
     }
 
     public synchronized boolean delete(User user) {
-        return user.equals(users.remove(user.getId()));
+        return users.remove(user.getId(), user);
     }
 
     public synchronized boolean transfer(int fromId, int toId, int amount) {
+        User fromUser = users.get(fromId);
+        User toUser = users.get(toId);
         boolean result = false;
-        if (users.containsKey(toId)
-                && users.containsKey(fromId)
-                && users.get(fromId).getAmount() >= amount) {
+        if (fromUser != null
+                && toUser != null
+                && fromUser.getAmount() >= amount) {
             int newAmountTo = users.get(toId).getAmount() + amount;
             int newAmountFrom = users.get(fromId).getAmount() - amount;
             update(new User(fromId, newAmountFrom));
