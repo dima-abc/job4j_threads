@@ -43,8 +43,8 @@ public class UserStorage {
         if (fromUser != null
                 && toUser != null
                 && fromUser.getAmount() >= amount) {
-            update(new User(fromId, fromUser.getAmount() - amount));
-            update(new User(toId, toUser.getAmount() + amount));
+            fromUser.setAmount(fromUser.getAmount() - amount);
+            toUser.setAmount(toUser.getAmount() + amount);
             result = true;
         }
         return result;

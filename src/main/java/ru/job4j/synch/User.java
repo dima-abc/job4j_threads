@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 public final class User {
     private final int id;
-    private final int amount;
+    private int amount;
 
     public User(final int id, final int amount) {
         this.id = id;
@@ -25,6 +25,10 @@ public final class User {
 
     public int getAmount() {
         return this.amount;
+    }
+
+    public void setAmount(final int amount) {
+        this.amount = amount;
     }
 
     @Override
