@@ -24,6 +24,10 @@ public class SimpleBlockingQueue<T> {
     private final Queue<T> queue = new LinkedList<>();
     private final int sizeQueue;
 
+    public SimpleBlockingQueue() {
+        this.sizeQueue = 5;
+    }
+
     public SimpleBlockingQueue(int sizeQueue) {
         this.sizeQueue = sizeQueue;
     }
@@ -34,14 +38,9 @@ public class SimpleBlockingQueue<T> {
      *
      * @param value Value.
      */
-    public synchronized void offer(T value) {
+    public synchronized void offer(T value) throws InterruptedException {
         while (queue.size() >= sizeQueue) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                LOGGER.error("Thread interrupt", e.getCause());
-            }
+            wait();
         }
         LOGGER.info("Offer value: {}", value);
         queue.offer(value);
@@ -54,15 +53,10 @@ public class SimpleBlockingQueue<T> {
      *
      * @return Type.
      */
-    public synchronized T poll() {
+    public synchronized T poll() throws InterruptedException {
         T result;
         while (queue.size() == 0) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                LOGGER.error("Thread interrupt", e.getCause());
-            }
+            wait();
         }
         result = queue.poll();
         LOGGER.info("Poll value: {}", result);
