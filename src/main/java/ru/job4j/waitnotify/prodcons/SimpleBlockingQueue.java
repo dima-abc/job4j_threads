@@ -25,7 +25,7 @@ public class SimpleBlockingQueue<T> {
     private final int sizeQueue;
 
     public SimpleBlockingQueue() {
-        this.sizeQueue = 5;
+        this.sizeQueue = Integer.MAX_VALUE;
     }
 
     public SimpleBlockingQueue(int sizeQueue) {
