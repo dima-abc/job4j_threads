@@ -1,10 +1,8 @@
-package ru.job4j.controll;
+package ru.job4j.waitnotify.control;
 
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.*;
 
 /**
  * 3.1.4. Wait, Notify, NotifyAll

@@ -1,8 +1,6 @@
-package ru.job4j.controll;
+package ru.job4j.waitnotify.control;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * 3.1.4. Wait, Notify, NotifyAll
