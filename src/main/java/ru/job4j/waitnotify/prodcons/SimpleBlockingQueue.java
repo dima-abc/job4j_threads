@@ -42,7 +42,7 @@ public class SimpleBlockingQueue<T> {
         while (queue.size() >= sizeQueue) {
             wait();
         }
-        LOGGER.info("Offer value: {}", value);
+        LOGGER.info("Offer value: {}", value.hashCode());
         queue.offer(value);
         notifyAll();
     }
@@ -59,7 +59,7 @@ public class SimpleBlockingQueue<T> {
             wait();
         }
         result = queue.poll();
-        LOGGER.info("Poll value: {}", result);
+        LOGGER.info("Poll value: {}", result.hashCode());
         notifyAll();
         return result;
     }

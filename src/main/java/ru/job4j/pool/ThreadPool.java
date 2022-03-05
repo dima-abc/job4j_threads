@@ -21,15 +21,43 @@ public class ThreadPool {
     private final List<Thread> threads = new LinkedList<>();
     private final SimpleBlockingQueue<Runnable> tasks = new SimpleBlockingQueue<>();
 
+    public ThreadPool() {
+        this.initThread();
+    }
+
+    private void initThread() {
+        for (int i = 0; i < SIZE; i++) {
+            threads.add(new Thread());
+            LOGGER.info("Создан {}", threads.get(i).getName());
+        }
+    }
+
     public void work(Runnable job) {
         try {
             tasks.offer(job);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            LOGGER.error("Thread interrupted", e.getCause());
         }
     }
 
-    private void runTasks(SimpleBlockingQueue<Runnable> tasks) {
+    public void treadStart() {
+        while (!tasks.isEmpty()) {
+            for (Thread thread : threads) {
+                if (!thread.isAlive()) {
+                    try {
+                        thread = new Thread(tasks.poll());
+                        LOGGER.info("{} start", thread.getName());
+                        thread.start();
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        LOGGER.error("Thread interrupted", e.getCause());
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -37,15 +65,17 @@ public class ThreadPool {
      */
     public void shutdown() {
         for (Thread thread : threads) {
-            try {
-                if (thread.getState() != Thread.State.TERMINATED) {
+            LOGGER.info("Начата остановка {}", thread.getName());
+            while (thread.isAlive()) {
+                try {
                     thread.join();
                     thread.interrupt();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    LOGGER.error("Thread interrupted", e.getCause());
                 }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                LOGGER.error("Thread interrupted", e.getCause());
             }
+            LOGGER.info("{} остановлен", thread.getName());
         }
     }
 }
