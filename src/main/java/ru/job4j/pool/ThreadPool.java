@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.job4j.waitnotify.prodcons.SimpleBlockingQueue;
 
+import javax.swing.table.TableRowSorter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,13 +23,24 @@ public class ThreadPool {
     private final SimpleBlockingQueue<Runnable> tasks = new SimpleBlockingQueue<>();
 
     public ThreadPool() {
-        this.initThread();
+        initThread();
     }
 
     private void initThread() {
         for (int i = 0; i < SIZE; i++) {
-            threads.add(new Thread());
-            LOGGER.info("Создан {}", threads.get(i).getName());
+            Thread thread = new Thread(
+                    () -> {
+                        while (!Thread.currentThread().isInterrupted()) {
+                            try {
+                                tasks.poll().run();
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                            }
+                        }
+                    });
+            threads.add(thread);
+            thread.start();
+            LOGGER.info("Создан {}", thread.getName());
         }
     }
 
@@ -41,39 +53,16 @@ public class ThreadPool {
         }
     }
 
-    public void treadStart() {
-        while (!tasks.isEmpty()) {
-            for (Thread thread : threads) {
-                if (!thread.isAlive()) {
-                    try {
-                        thread = new Thread(tasks.poll());
-                        LOGGER.info("{} start", thread.getName());
-                        thread.start();
-                        thread.join();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        LOGGER.error("Thread interrupted", e.getCause());
-                    }
-                    break;
-                }
-            }
-        }
-    }
-
     /**
      * Метод shutdown() завершает все запущенные задачи.
      */
     public void shutdown() {
         for (Thread thread : threads) {
-            LOGGER.info("Начата остановка {}", thread.getName());
-            while (thread.isAlive()) {
-                try {
-                    thread.join();
-                    thread.interrupt();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    LOGGER.error("Thread interrupted", e.getCause());
-                }
+            thread.interrupt();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
             LOGGER.info("{} остановлен", thread.getName());
         }

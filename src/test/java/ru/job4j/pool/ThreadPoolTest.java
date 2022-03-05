@@ -3,8 +3,6 @@ package ru.job4j.pool;
 import org.junit.Test;
 import ru.job4j.nonblockingalgoritm.cas.CASCount;
 
-import java.time.LocalTime;
-
 import static org.junit.Assert.*;
 
 /**
@@ -22,8 +20,7 @@ public class ThreadPoolTest {
                 System.out.println(count.get());
             });
         }
-        pool.treadStart();
+        pool.shutdown();
         assertEquals(8, count.get());
     }
-
 }
