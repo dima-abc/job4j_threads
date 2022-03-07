@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.job4j.waitnotify.prodcons.SimpleBlockingQueue;
 
-import javax.swing.table.TableRowSorter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,24 +22,11 @@ public class ThreadPool {
     private final SimpleBlockingQueue<Runnable> tasks = new SimpleBlockingQueue<>();
 
     public ThreadPool() {
-        initThread();
-    }
-
-    private void initThread() {
         for (int i = 0; i < SIZE; i++) {
-            Thread thread = new Thread(
-                    () -> {
-                        while (!Thread.currentThread().isInterrupted()) {
-                            try {
-                                tasks.poll().run();
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                            }
-                        }
-                    });
+            Thread thread = new MyThread(tasks);
             threads.add(thread);
             thread.start();
-            LOGGER.info("Создан {}", thread.getName());
+            LOGGER.info("{} thread start", thread.getName());
         }
     }
 
@@ -65,6 +51,26 @@ public class ThreadPool {
                 Thread.currentThread().interrupt();
             }
             LOGGER.info("{} остановлен", thread.getName());
+        }
+    }
+
+    private class MyThread extends Thread {
+        SimpleBlockingQueue<Runnable> target;
+
+        public MyThread(SimpleBlockingQueue<Runnable> target) {
+            this.target = target;
+        }
+
+        @Override
+        public void run() {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    target.poll().run();
+                    LOGGER.info("{} task run", Thread.currentThread().getName());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
     }
 }
