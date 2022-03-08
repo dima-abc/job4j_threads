@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  */
 public class ThreadPoolTest {
     @Test
-    public void whenInit() {
+    public void whenInit() throws InterruptedException {
         ThreadPool pool = new ThreadPool();
         CASCount count = new CASCount();
         for (int i = 0; i < 8; i++) {
@@ -20,6 +20,7 @@ public class ThreadPoolTest {
                 System.out.println(count.get());
             });
         }
+        Thread.sleep(5000);
         pool.shutdown();
         assertEquals(8, count.get());
     }

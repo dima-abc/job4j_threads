@@ -45,11 +45,6 @@ public class ThreadPool {
     public void shutdown() {
         for (Thread thread : threads) {
             thread.interrupt();
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
             LOGGER.info("{} остановлен", thread.getName());
         }
     }
