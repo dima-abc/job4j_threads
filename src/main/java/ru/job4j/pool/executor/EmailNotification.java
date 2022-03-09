@@ -16,9 +16,8 @@ import java.util.concurrent.Executors;
  * @since 09.03.2022
  */
 public class EmailNotification {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EmailNotification.class.getName());
     private static final int SIZE_PROC = Runtime.getRuntime().availableProcessors();
-    ExecutorService pool = Executors.newFixedThreadPool(SIZE_PROC);
+    private final ExecutorService pool = Executors.newFixedThreadPool(SIZE_PROC);
 
     /**
      * Метод emailTo(User user),
@@ -38,8 +37,8 @@ public class EmailNotification {
      * Создание сообщения для пользователя.
      *
      * @param subject String
-     * @param body String
-     * @param email String
+     * @param body    String
+     * @param email   String
      */
     public void send(String subject, String body, String email) {
 
