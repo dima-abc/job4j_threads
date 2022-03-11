@@ -260,13 +260,13 @@ public class SampleCompletableFuture {
 
     public static void main(String[] args) throws Exception {
         anyOfExample();
-        //allOfExample();
-        //thenCombineExample();
-        //thenComposeExample();
-        //thenApplyExample();
-        // thenAcceptExample();
-        //thenRunExample();
-        //supplyAsyncExample();
-        //runAsyncExample();
+        allOfExample();
+        thenCombineExample();
+        thenComposeExample();
+        thenApplyExample();
+        thenAcceptExample();
+        thenRunExample();
+        supplyAsyncExample();
+        runAsyncExample();
     }
 }
