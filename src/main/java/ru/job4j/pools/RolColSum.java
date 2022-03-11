@@ -1,6 +1,13 @@
 package ru.job4j.pools;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 3.1.6. Пулы
@@ -15,6 +22,56 @@ import java.util.Objects;
  * @since 11.03.2022
  */
 public class RolColSum {
+    /**
+     * Последовательный подсчет сумм по строкам и столбцам квадратной матрицы.
+     *
+     * @param matrix Integer matrix.
+     * @return Sums array.
+     */
+    public static Sums[] sum(int[][] matrix) {
+        Sums[] result = new Sums[matrix.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = new Sums(0, 0);
+        }
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                result[i].setRowSum(matrix[i][j] + result[i].getRowSum());
+                result[j].setColSum(matrix[i][j] + result[j].getColSum());
+            }
+        }
+        return result;
+    }
+
+    public static Sums[] asyncSum(int[][] matrix) throws ExecutionException, InterruptedException {
+        Sums[] result = new Sums[matrix.length];
+        for (int i = 0; i < matrix.length; i++) {
+            result[i] = getTask(matrix, i).get();
+        }
+        return result;
+    }
+
+    /**
+     * Обобщенная асинхронная задача
+     * для вычисления суммы одного столбца и одной строки.
+     *
+     * @param matrix Integer matrix
+     * @param start  Int.
+     * @return Sums.
+     */
+    private static CompletableFuture<Sums> getTask(int[][] matrix, int start) {
+        return CompletableFuture.supplyAsync(() -> {
+            Sums sums = new Sums(0, 0);
+            for (int i = 0; i < matrix.length; i++) {
+                sums.setRowSum(matrix[start][i] + sums.getRowSum());
+                sums.setColSum(matrix[i][start] + sums.getColSum());
+            }
+            return sums;
+        });
+    }
+
+    /**
+     * Модель данных для подсчета сумм строк и столбцов.
+     */
     public static class Sums {
         private int rowSum;
         private int colSum;
@@ -61,27 +118,5 @@ public class RolColSum {
         public String toString() {
             return "Sums{" + rowSum + ":" + colSum + '}';
         }
-    }
-
-    /**
-     * Последовательный подсчет сумм по строкам и столбцам квадратной матрицы.
-     *
-     * @param matrix Integer matrix.
-     * @return Sums array.
-     */
-    public static Sums[] sum(int[][] matrix) {
-        Sums[] result = new Sums[matrix.length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = new Sums(0, 0);
-        }
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
-                int sumR = result[i].getRowSum();
-                int sumC = result[j].getColSum();
-                result[i].setRowSum(sumR + matrix[i][j]);
-                result[j].setColSum(sumC + matrix[i][j]);
-            }
-        }
-        return result;
     }
 }
