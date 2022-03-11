@@ -3,6 +3,7 @@ package ru.job4j.pools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
 /**
@@ -24,29 +25,32 @@ public class ParallelSearchIndex extends RecursiveTask<Integer> {
     private final int from;
     private final int to;
 
-    public ParallelSearchIndex(Object[] objects, Object value, int from, int to) {
+    public ParallelSearchIndex(final Object[] objects, final Object value, final int from, final int to) {
         this.objects = objects;
         this.value = value;
         this.from = from;
         this.to = to;
+    }
 
+    public static Integer myInvoke(Object[] objects, Object value, int from, int to) {
+        ForkJoinPool forkJoinPool = new ForkJoinPool();
+        return forkJoinPool.invoke(new ParallelSearchIndex(objects, value, from, to));
     }
 
     @Override
     protected Integer compute() {
         if (to - from <= THRESHOLD) {
             return searchLine(from, to);
-        } else {
-            int mid = Math.min(from + 10, to);
-            ParallelSearchIndex left = new ParallelSearchIndex(objects, value, from, mid);
-            ParallelSearchIndex right = new ParallelSearchIndex(
-                    objects, value, mid + 1, to);
-            left.fork();
-            right.fork();
-            int l = left.join();
-            int r = right.join();
-            return Math.max(r, l);
         }
+        int mid = (from + to) / 2;
+        ParallelSearchIndex left = new ParallelSearchIndex(objects, value, from, mid);
+        ParallelSearchIndex right = new ParallelSearchIndex(
+                objects, value, mid + 1, to);
+        left.fork();
+        right.fork();
+        int l = left.join();
+        int r = right.join();
+        return Math.max(r, l);
     }
 
     /**

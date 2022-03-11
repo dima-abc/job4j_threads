@@ -2,8 +2,6 @@ package ru.job4j.pools;
 
 import org.junit.Test;
 
-import java.util.concurrent.ForkJoinPool;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -26,10 +24,8 @@ public class ParallelSearchIndexTest {
         Integer key = 17;
         Integer[] integers = new Integer[]{
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
         int expected = 16;
-        int result = forkJoinPool.invoke(
-                new ParallelSearchIndex(integers, key, 0, integers.length));
+        int result = ParallelSearchIndex.myInvoke(integers, key, 0, integers.length - 1);
         assertThat(result, is(expected));
     }
 
@@ -38,10 +34,8 @@ public class ParallelSearchIndexTest {
         Integer key = 6;
         Integer[] integers = new Integer[]{
                 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
         int expected = 5;
-        int result = forkJoinPool.invoke(
-                new ParallelSearchIndex(integers, key, 0, integers.length));
+        int result = ParallelSearchIndex.myInvoke(integers, key, 0, integers.length - 1);
         assertThat(result, is(expected));
     }
 
@@ -52,10 +46,8 @@ public class ParallelSearchIndexTest {
         for (int i = 0; i < 37; i++) {
             integers[i] = i + 1;
         }
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
         int expected = 31;
-        int result = forkJoinPool.invoke(
-                new ParallelSearchIndex(integers, key, 0, integers.length));
+        int result = ParallelSearchIndex.myInvoke(integers, key, 0, integers.length - 1);
         assertThat(result, is(expected));
     }
 
@@ -66,10 +58,8 @@ public class ParallelSearchIndexTest {
         for (int i = 0; i < 60; i++) {
             integers[i] = i + 1;
         }
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
         int expected = 55;
-        int result = forkJoinPool.invoke(
-                new ParallelSearchIndex(integers, key, 0, integers.length));
+        int result = ParallelSearchIndex.myInvoke(integers, key, 0, integers.length - 1);
         assertThat(result, is(expected));
     }
 
@@ -80,10 +70,8 @@ public class ParallelSearchIndexTest {
         for (int i = 0; i < 200; i++) {
             integers[i] = i + 1;
         }
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
         int expected = 198;
-        int result = forkJoinPool.invoke(
-                new ParallelSearchIndex(integers, key, 0, integers.length));
+        int result = ParallelSearchIndex.myInvoke(integers, key, 0, integers.length - 1);
         assertThat(result, is(expected));
     }
 }
