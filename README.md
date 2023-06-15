@@ -29,3 +29,10 @@ Job4j.ru
 
 3.2.0. Основы Git
 3.1. Добавить изменения в последний коммит. [#504829]
+
+
+### Контакты
+
+> email: [haoos@inbox.ru](mailto:haoos@inbox.ru) <br>
+> tl: [Dima_software](https://t.me/Dima_software) <br>
+> github.com: [Dima-Stepanov](https://github.com/Dima-Stepanov)
